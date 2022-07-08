@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Infrastructure.Data.Core.Context;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Web.Api.Controllers
 {
@@ -6,11 +8,19 @@ namespace Presentation.Web.Api.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
-        [HttpGet]
-        [Route("printMessage")]
-        public IActionResult printMessage()
+        private readonly QhatuContext _context;
+
+        public HomeController(QhatuContext context)
         {
-            return Ok("Mensaje desde un controlador en .NET 5 👷‍♂️");
+            _context = context;
+        }
+
+        [HttpGet]
+        [Route("getProducts")]
+        public IActionResult GetProducts()
+        {
+            var products = _context.Products.ToList();
+            return Ok(products);
         }
     }
 }

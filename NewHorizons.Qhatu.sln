@@ -11,25 +11,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Domain", "3. Domain", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Infrastructure", "4. Infrastructure", "{DEA78972-0F81-46AE-9ABF-7AF12848484D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation.Web.Api", "Presentation.Web.Api\Presentation.Web.Api.csproj", "{8206EE8F-7BF7-42F1-B39A-9678959523E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.Web.Api", "Presentation.Web.Api\Presentation.Web.Api.csproj", "{8206EE8F-7BF7-42F1-B39A-9678959523E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.MainModule", "Application.MainModule\Application.MainModule.csproj", "{65A69A54-B9B5-4BB8-BA8D-D7C800375DBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.MainModule", "Application.MainModule\Application.MainModule.csproj", "{65A69A54-B9B5-4BB8-BA8D-D7C800375DBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.MainModule.DTO", "Application.MainModule.DTO\Application.MainModule.DTO.csproj", "{3D60096B-6D74-4791-BDA6-6AEA4D55FF82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.MainModule.DTO", "Application.MainModule.DTO\Application.MainModule.DTO.csproj", "{3D60096B-6D74-4791-BDA6-6AEA4D55FF82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Core", "Domain.Core\Domain.Core.csproj", "{386450C2-0C73-4CAC-BF84-7459B9AAE53C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Core", "Domain.Core\Domain.Core.csproj", "{386450C2-0C73-4CAC-BF84-7459B9AAE53C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.MainModule", "Domain.MainModule\Domain.MainModule.csproj", "{B278473F-EFA6-4207-84CE-6DCE855C36A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.MainModule", "Domain.MainModule\Domain.MainModule.csproj", "{B278473F-EFA6-4207-84CE-6DCE855C36A1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.1. Data", "4.1. Data", "{11FD6238-91A9-4AC1-94D0-70002F42B54F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.2. Cross-Cutting", "4.2. Cross-Cutting", "{75D10C61-1422-4385-8CB1-4B387125575E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Data.Core", "Infrastructure.Data.Core\Infrastructure.Data.Core.csproj", "{8EC217FF-B423-415D-83FD-28FB337C2AA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Data.Core", "Infrastructure.Data.Core\Infrastructure.Data.Core.csproj", "{8EC217FF-B423-415D-83FD-28FB337C2AA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infraestructure.Data.MainModule", "Infraestructure.Data.MainModule\Infraestructure.Data.MainModule.csproj", "{609177DB-0BB4-4130-8857-EBBDD819836B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Data.MainModule", "Infraestructure.Data.MainModule\Infrastructure.Data.MainModule.csproj", "{609177DB-0BB4-4130-8857-EBBDD819836B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.CrossCutting", "Infrastructure.CrossCutting\Infrastructure.CrossCutting.csproj", "{DC85119F-3579-4852-A3FB-7284AACED2A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.CrossCutting", "Infrastructure.CrossCutting\Infrastructure.CrossCutting.csproj", "{DC85119F-3579-4852-A3FB-7284AACED2A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
