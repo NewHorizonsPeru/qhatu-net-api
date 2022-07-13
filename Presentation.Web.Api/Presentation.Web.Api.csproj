@@ -16,6 +16,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Application.MainModule.DTO\Application.MainModule.DTO.csproj" />
     <ProjectReference Include="..\Application.MainModule\Application.MainModule.csproj" />
+    <ProjectReference Include="..\Domain.MainModule\Domain.MainModule.csproj" />
+    <ProjectReference Include="..\Infraestructure.Data.MainModule\Infrastructure.Data.MainModule.csproj" />
     <ProjectReference Include="..\Infrastructure.Data.Core\Infrastructure.Data.Core.csproj" />
   </ItemGroup>
 
