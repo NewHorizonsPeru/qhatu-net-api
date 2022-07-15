@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Encrypt = BCrypt.Net.BCrypt;
 using Application.MainModule.DTO;
 using Application.MainModule.IServices;
 using AutoMapper;
@@ -19,16 +20,11 @@ namespace Application.MainModule.Services
 
         public UserDto SignIn(string username, string password)
         {
-            
-            var currentUser = _userRepository.Find(s => s.Email.Equals(username) && s.Password.Equals(password)).FirstOrDefault();
+            var currentUser = _userRepository.Find(s => s.Email.Equals(username)).FirstOrDefault();
+            if (currentUser == null || !Encrypt.Verify(password, currentUser.Password)) return null;
+            var currentUserDto = _mapper.Map<UserDto>(currentUser);
+            return currentUserDto;
 
-            if (currentUser != null)
-            {
-                var currentUserDto = _mapper.Map<UserDto>(currentUser);
-                return currentUserDto;
-            }
-
-            return null;
         }
 
         public IEnumerable<UserDto> GetAll()
