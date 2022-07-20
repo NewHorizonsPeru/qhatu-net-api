@@ -6,6 +6,7 @@ namespace Application.MainModule.IServices
     public interface IUserService
     {
         UserDto SignIn(string username, string password);
+        UserDto SignUp(UserDto userDto);
         IEnumerable<UserDto> GetAll();
         UserDto GetById(int id);
         void Add(UserDto userDto);

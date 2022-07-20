@@ -6,7 +6,6 @@ using Application.MainModule.DTO;
 using Application.MainModule.DTO.Request;
 using Application.MainModule.DTO.Response;
 using Application.MainModule.IServices;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -66,5 +65,13 @@ namespace Presentation.Web.Api.Controllers
 
             return new SignInResponseDto { Token = new JwtSecurityTokenHandler().WriteToken(token), User = userDto };
         }
+
+        [Route("signUp")]
+        [HttpPost]
+        public IActionResult SignUp(UserDto request)
+        {
+            return Ok(_userService.SignUp(request));
+        }
+
     }
 }

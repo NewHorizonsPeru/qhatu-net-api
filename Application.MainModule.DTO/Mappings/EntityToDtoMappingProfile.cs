@@ -9,7 +9,8 @@ namespace Application.MainModule.DTO.Mappings
         {
             CreateMap<User, UserDto>()
                 .ForMember(d => d.Id, src => src.MapFrom(m => m.UserId))
-                .ForMember(d => d.Username, src => src.MapFrom(m => m.Email));
+                .ForMember(d => d.Username, src => src.MapFrom(m => m.Email))
+                .ForMember(d => d.Password, opt => opt.Ignore());
             CreateMap<Category, CategoryDto>()
                 .ForMember(d => d.Id, src => src.MapFrom(m => m.CategoryId));
             CreateMap<Product, ProductDto>()

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.MainModule.Entities;
+using Infrastructure.CrossCutting.BCrypt;
 
 namespace Application.MainModule.DTO.Mappings
 {
@@ -9,7 +10,8 @@ namespace Application.MainModule.DTO.Mappings
         {
             CreateMap<UserDto, User>()
                 .ForMember(d => d.UserId, src => src.MapFrom(m => m.Id))
-                .ForMember(d => d.Email, src => src.MapFrom(m => m.Username));
+                .ForMember(d => d.Email, src => src.MapFrom(m => m.Username))
+                .ForMember(d => d.Password, src => src.MapFrom(m =>  BCryptManager.Encrypt(m.Password)));
 
             CreateMap<CategoryDto, Category>()
                 .ForMember(d => d.CategoryId, src => src.MapFrom(m => m.Id));
