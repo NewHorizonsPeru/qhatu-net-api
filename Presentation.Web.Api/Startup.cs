@@ -1,8 +1,13 @@
+using System;
+using System.Collections.Generic;
 using System.Text;
+using Application.MainModule.DTO.AppSettings;
+using Application.MainModule.DTO.Fluent;
 using Application.MainModule.DTO.Mappings;
 using Application.MainModule.IServices;
 using Application.MainModule.Services;
 using Domain.MainModule.IRepositories;
+using FluentValidation.AspNetCore;
 using Infrastructure.Data.Core.Context;
 using Infrastructure.Data.MainModule.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,6 +18,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Presentation.Web.Api.Filters;
 
 namespace Presentation.Web.Api
 {
@@ -28,9 +35,12 @@ namespace Presentation.Web.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CryptoSection>(Configuration.GetSection("CryptoSection"));
             /*AUTO MAPPER SECTION*/
             services.AddAutoMapper(typeof(EntityToDtoMappingProfile), typeof(DtoToEntityMappingProfile));
             services.AddControllers();
+            services.AddMvc(m => { m.Filters.Add<FluentDtoFilter>();})
+                .AddFluentValidation(r => r.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
             /*DATABASE SECTION*/
             services.AddDbContext<QhatuContext>(c => c.UseSqlServer(Configuration.GetConnectionString("Qhatu")));
             /*REPOSITORIES DI SECTION*/
@@ -39,13 +49,21 @@ namespace Presentation.Web.Api
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IOrderDetailRepository, OrderDetailRepository>();
-            /*SERVICES DI SECTION*/
+
+
+            #region SERVICES DI
+
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<IOrderDetailService, OrderDetailService>();
-            /*AUTHENTICATION SECTION*/
+
+
+            #endregion
+
+            #region AUTHENTICATION
+
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -63,6 +81,58 @@ namespace Presentation.Web.Api
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtBearer:SecretKey"]))
                 };
             });
+
+
+            #endregion
+
+            #region SWAGGER
+
+            services.AddSwaggerGen(doc =>
+            {
+                doc.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = @"Esta API utiliza autorización basada en tokens. Ingrese 'Bearer' [espacio] TOKEN"
+                });
+                doc.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        }, new List<string>()
+                    }
+                });
+                doc.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "Qhatu API", 
+                        Version = "v1",
+                        Description = "Simplify API development for users, teams, and enterprises with the Swagger open source and professional toolset. Find out how Swagger can help you design and document your APIs at scale.",
+                        Contact = new OpenApiContact
+                        {
+                            Email = "admin@newhorizons.edu.pe",
+                            Name = "Juan Pablo Perez Lopez",
+                            Url = new Uri("https://swagger.io/resources/open-api/")
+                        },
+                        License = new OpenApiLicense
+                        {
+                            Name = "License 2022",
+                            Url = new Uri("https://swagger.io/resources/open-api/")
+                        },
+                        TermsOfService = new Uri("https://swagger.io/resources/open-api/")
+                    });
+            });
+
+            #endregion
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,6 +141,12 @@ namespace Presentation.Web.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(opt =>
+                {
+                    opt.SwaggerEndpoint("/swagger/v1/swagger.json", "Qhatu API");
+                    opt.RoutePrefix = string.Empty;
+                });
             }
             
             app.UseHttpsRedirection();

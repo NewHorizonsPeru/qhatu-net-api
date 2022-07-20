@@ -28,12 +28,19 @@ namespace Presentation.Web.Api.Controllers
         }
 
         [Route("auth")]
+        [HttpPost]
         public IActionResult SignIn(SignInRequestDto request)
         {
-            var userDto = _userService.SignIn(request.Username, request.Password);
-            if (userDto == null) return NotFound();
+            if (ModelState.IsValid)
+            {
+                var userDto = _userService.SignIn(request.Username, request.Password);
+                if (userDto == null) return NotFound();
 
-            return Ok(BuildBearerToken(userDto));
+                return Ok(BuildBearerToken(userDto));
+
+            }
+
+            return null;
         }
 
         private SignInResponseDto BuildBearerToken(UserDto userDto)

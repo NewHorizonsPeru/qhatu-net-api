@@ -4,6 +4,7 @@ using Encrypt = BCrypt.Net.BCrypt;
 using Application.MainModule.DTO;
 using Application.MainModule.IServices;
 using AutoMapper;
+using Domain.MainModule.Entities;
 using Domain.MainModule.IRepositories;
 
 namespace Application.MainModule.Services
@@ -29,27 +30,39 @@ namespace Application.MainModule.Services
 
         public IEnumerable<UserDto> GetAll()
         {
-            throw new System.NotImplementedException();
+            var users = _userRepository.List();
+            return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
         public UserDto GetById(int id)
         {
-            throw new System.NotImplementedException();
+            var user = _userRepository.GetById(id);
+            return _mapper.Map<UserDto>(user);
         }
 
         public void Add(UserDto userDto)
         {
-            throw new System.NotImplementedException();
+            var existsUsers = _userRepository.List(w => w.Email.Contains(userDto.Username));
+            if (!existsUsers.Any())
+            {
+                var category = _mapper.Map<User>(userDto);
+                _userRepository.Add(category);
+                _userRepository.Save();
+            }
         }
 
         public void Update(int id, UserDto userDto)
         {
-            throw new System.NotImplementedException();
+            var user = _userRepository.GetById(id);
+            _mapper.Map(userDto, user);
+            _userRepository.Save();
         }
 
         public void Remove(int id)
         {
-            throw new System.NotImplementedException();
+            var user = _userRepository.GetById(id);
+            _userRepository.Remove(user);
+            _userRepository.Save();
         }
     }
 }
