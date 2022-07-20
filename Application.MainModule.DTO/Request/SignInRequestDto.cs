@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Application.MainModule.DTO.Request
+﻿namespace Application.MainModule.DTO.Request
 {
     public class SignInRequestDto
     {

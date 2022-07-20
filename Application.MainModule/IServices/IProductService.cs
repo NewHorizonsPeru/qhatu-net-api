@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Application.MainModule.DTO;
 
 namespace Application.MainModule.IServices

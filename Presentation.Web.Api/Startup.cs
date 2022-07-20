@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Application.MainModule.DTO.AppSettings;
-using Application.MainModule.DTO.Fluent;
 using Application.MainModule.DTO.Mappings;
 using Application.MainModule.IServices;
 using Application.MainModule.Services;
@@ -20,6 +19,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Presentation.Web.Api.Filters;
+using Presentation.Web.Api.Middleware;
+using Presentation.Web.Api.Util;
 
 namespace Presentation.Web.Api
 {
@@ -36,6 +37,7 @@ namespace Presentation.Web.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CryptoSection>(Configuration.GetSection("CryptoSection"));
+            
             /*AUTO MAPPER SECTION*/
             services.AddAutoMapper(typeof(EntityToDtoMappingProfile), typeof(DtoToEntityMappingProfile));
             services.AddControllers();
@@ -50,6 +52,11 @@ namespace Presentation.Web.Api
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IOrderDetailRepository, OrderDetailRepository>();
 
+            #region UTIL DI
+            services.AddTransient<IJwtUtil, JwtUtil>();
+
+
+            #endregion
 
             #region SERVICES DI
 
@@ -152,9 +159,8 @@ namespace Presentation.Web.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseMiddleware<JwtMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

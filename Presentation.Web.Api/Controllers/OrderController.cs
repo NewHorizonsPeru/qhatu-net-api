@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Web.Api.Controllers
 {
-    [Authorize]
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
