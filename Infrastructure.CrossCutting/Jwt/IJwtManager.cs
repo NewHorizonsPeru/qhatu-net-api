@@ -1,6 +1,6 @@
-﻿namespace Presentation.Web.Api.Util
+﻿namespace Infrastructure.CrossCutting.Jwt
 {
-    public interface IJwtUtil
+    public interface IJwtManager
     {
         string GenerateToken(int userId, string firstName, string lastName, string username);
         string ValidateToken(string jwtBearer);

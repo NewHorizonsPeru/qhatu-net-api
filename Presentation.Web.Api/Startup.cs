@@ -8,6 +8,7 @@ using Application.MainModule.IServices;
 using Application.MainModule.Services;
 using Domain.MainModule.IRepositories;
 using FluentValidation.AspNetCore;
+using Infrastructure.CrossCutting.Jwt;
 using Infrastructure.CrossCutting.Logger;
 using Infrastructure.Data.Core.Context;
 using Infrastructure.Data.MainModule.Repositories;
@@ -23,7 +24,6 @@ using Microsoft.OpenApi.Models;
 using NLog;
 using Presentation.Web.Api.Filters;
 using Presentation.Web.Api.Middleware;
-using Presentation.Web.Api.Util;
 
 namespace Presentation.Web.Api
 {
@@ -59,7 +59,7 @@ namespace Presentation.Web.Api
             services.AddTransient<IOrderDetailRepository, OrderDetailRepository>();
 
             #region UTIL DI
-            services.AddTransient<IJwtUtil, JwtUtil>();
+            services.AddTransient<IJwtManager, JwtManager>();
 
 
             #endregion
@@ -158,7 +158,7 @@ namespace Presentation.Web.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
         {
             if (env.IsDevelopment())
             {
@@ -173,7 +173,7 @@ namespace Presentation.Web.Api
 
             app.UseCors(_allowSpecificOrigins);
             //app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-            app.UseExceptionMiddleware();
+            app.UseMiddleware<ExceptionMiddleware>(logger);
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

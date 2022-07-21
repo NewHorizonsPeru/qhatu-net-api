@@ -4,16 +4,19 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Application.MainModule.DTO.Exceptions;
+using Infrastructure.CrossCutting.Logger;
 
 namespace Presentation.Web.Api.Middleware
 {
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILoggerManager _logger;
 
-        public ExceptionMiddleware(RequestDelegate next)
+        public ExceptionMiddleware(RequestDelegate next, ILoggerManager logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext httpContext)
@@ -24,6 +27,7 @@ namespace Presentation.Web.Api.Middleware
             }
             catch (Exception ex)
             {
+                _logger.LoggerError($"Message: {ex.Message}");
                 await HandlerGenericException(httpContext, ex);
             }
         }

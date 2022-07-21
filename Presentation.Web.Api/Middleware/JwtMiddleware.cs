@@ -2,8 +2,8 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using Infrastructure.CrossCutting.Jwt;
 using Microsoft.Extensions.Configuration;
-using Presentation.Web.Api.Util;
 
 namespace Presentation.Web.Api.Middleware
 {
@@ -11,13 +11,13 @@ namespace Presentation.Web.Api.Middleware
     public class JwtMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly IJwtUtil _jwtUtil;
+        private readonly IJwtManager _jwtManager;
         private readonly IConfiguration _configuration;
 
-        public JwtMiddleware(RequestDelegate next, IJwtUtil jwtUtil, IConfiguration configuration)
+        public JwtMiddleware(RequestDelegate next, IJwtManager jwtManager, IConfiguration configuration)
         {
             _next = next;
-            _jwtUtil = jwtUtil;
+            _jwtManager = jwtManager;
             _configuration = configuration;
         }
 
@@ -36,7 +36,7 @@ namespace Presentation.Web.Api.Middleware
         {
             try
             {
-                var userId = _jwtUtil.ValidateToken(token);
+                var userId = _jwtManager.ValidateToken(token);
                 httpContext.Items["currentUser"] = userId;
             }
             catch (Exception e)

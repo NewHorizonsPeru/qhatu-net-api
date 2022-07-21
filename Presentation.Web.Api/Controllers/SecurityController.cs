@@ -2,10 +2,10 @@
 using Application.MainModule.DTO.Request;
 using Application.MainModule.DTO.Response;
 using Application.MainModule.IServices;
+using Infrastructure.CrossCutting.Jwt;
 using Infrastructure.CrossCutting.Logger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Presentation.Web.Api.Util;
 
 namespace Presentation.Web.Api.Controllers
 {
@@ -16,14 +16,14 @@ namespace Presentation.Web.Api.Controllers
     {
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
-        private readonly IJwtUtil _jwtUtil;
+        private readonly IJwtManager _jwtManager;
         private readonly ILoggerManager _logger;
 
-        public SecurityController(IUserService userService, IConfiguration configuration, IJwtUtil jwtUtil, ILoggerManager logger)
+        public SecurityController(IUserService userService, IConfiguration configuration, IJwtManager jwtManager, ILoggerManager logger)
         {
             _userService = userService;
             _configuration = configuration;
-            _jwtUtil = jwtUtil;
+            _jwtManager = jwtManager;
             _logger = logger;
         }
 
@@ -39,7 +39,7 @@ namespace Presentation.Web.Api.Controllers
                 if (userDto == null) return NotFound();
                 var response = new SignInResponseDto
                 {
-                    Token = _jwtUtil.GenerateToken(userDto.Id, userDto.FirstName, userDto.LastName, userDto.Username),
+                    Token = _jwtManager.GenerateToken(userDto.Id, userDto.FirstName, userDto.LastName, userDto.Username),
                     User = userDto
                 };
                 return Ok(response) ;

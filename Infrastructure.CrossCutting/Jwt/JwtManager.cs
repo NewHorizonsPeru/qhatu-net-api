@@ -6,13 +6,13 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Presentation.Web.Api.Util
+namespace Infrastructure.CrossCutting.Jwt
 {
-    public class JwtUtil : IJwtUtil
+    public class JwtManager : IJwtManager
     {
         private readonly IConfiguration _configuration;
 
-        public JwtUtil(IConfiguration configuration)
+        public JwtManager(IConfiguration configuration)
         {
             _configuration = configuration;
         }
