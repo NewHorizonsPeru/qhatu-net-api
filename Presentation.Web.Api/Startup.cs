@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 using Application.MainModule.DTO.AppSettings;
 using Application.MainModule.DTO.Mappings;
 using Application.MainModule.IServices;
 using Application.MainModule.Services;
+using AspNetCoreRateLimit;
 using Domain.MainModule.IRepositories;
 using FluentValidation.AspNetCore;
 using Infrastructure.CrossCutting.Jwt;
@@ -43,7 +45,14 @@ namespace Presentation.Web.Api
         {
             services.AddScoped<ILoggerManager, LoggerManager>();
             services.Configure<CryptoSection>(Configuration.GetSection("CryptoSection"));
-            
+            //RATE LIMIT SECTION
+            services.AddMemoryCache();
+            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+            services.AddInMemoryRateLimiting();
             /*AUTO MAPPER SECTION*/
             services.AddAutoMapper(typeof(EntityToDtoMappingProfile), typeof(DtoToEntityMappingProfile));
             services.AddControllers();
@@ -173,6 +182,7 @@ namespace Presentation.Web.Api
 
             app.UseCors(_allowSpecificOrigins);
             //app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            app.UseIpRateLimiting();
             app.UseMiddleware<ExceptionMiddleware>(logger);
             app.UseHttpsRedirection();
             app.UseRouting();
