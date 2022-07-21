@@ -26,6 +26,7 @@ using Microsoft.OpenApi.Models;
 using NLog;
 using Presentation.Web.Api.Filters;
 using Presentation.Web.Api.Middleware;
+using Presentation.Web.API.Middleware;
 
 namespace Presentation.Web.Api
 {
@@ -179,7 +180,7 @@ namespace Presentation.Web.Api
                     opt.RoutePrefix = string.Empty;
                 });
             }
-
+            app.UseSecurityHeaders();
             app.UseCors(_allowSpecificOrigins);
             //app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             app.UseIpRateLimiting();
