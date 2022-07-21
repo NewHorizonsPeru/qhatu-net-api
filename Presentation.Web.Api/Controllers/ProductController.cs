@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.MainModule.DTO;
 using Application.MainModule.IServices;
-using Microsoft.AspNetCore.Authorization;
+using Presentation.Web.Api.Filters;
 
 namespace Presentation.Web.Api.Controllers
 {
+    [CustomAuthorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]

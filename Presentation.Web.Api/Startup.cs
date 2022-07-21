@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Application.MainModule.DTO.AppSettings;
 using Application.MainModule.DTO.Mappings;
@@ -7,6 +8,7 @@ using Application.MainModule.IServices;
 using Application.MainModule.Services;
 using Domain.MainModule.IRepositories;
 using FluentValidation.AspNetCore;
+using Infrastructure.CrossCutting.Logger;
 using Infrastructure.Data.Core.Context;
 using Infrastructure.Data.MainModule.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NLog;
 using Presentation.Web.Api.Filters;
 using Presentation.Web.Api.Middleware;
 using Presentation.Web.Api.Util;
@@ -26,8 +29,10 @@ namespace Presentation.Web.Api
 {
     public class Startup
     {
+        private readonly string _allowSpecificOrigins = "_allowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/NLog.config"));
             Configuration = configuration;
         }
 
@@ -36,6 +41,7 @@ namespace Presentation.Web.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<ILoggerManager, LoggerManager>();
             services.Configure<CryptoSection>(Configuration.GetSection("CryptoSection"));
             
             /*AUTO MAPPER SECTION*/
@@ -140,6 +146,15 @@ namespace Presentation.Web.Api
 
             #endregion
 
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy(_allowSpecificOrigins, builder =>
+                {
+                    builder.WithOrigins(Configuration.GetValue<string>("CorsSection:AllowOrigin"))
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -155,9 +170,11 @@ namespace Presentation.Web.Api
                     opt.RoutePrefix = string.Empty;
                 });
             }
-            
-            app.UseHttpsRedirection();
 
+            app.UseCors(_allowSpecificOrigins);
+            //app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            app.UseExceptionMiddleware();
+            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
             app.UseMiddleware<JwtMiddleware>();

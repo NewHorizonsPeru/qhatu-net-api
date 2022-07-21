@@ -2,6 +2,7 @@
 using System.Linq;
 using Encrypt = BCrypt.Net.BCrypt;
 using Application.MainModule.DTO;
+using Application.MainModule.DTO.Exceptions;
 using Application.MainModule.IServices;
 using AutoMapper;
 using Domain.MainModule.Entities;
@@ -32,7 +33,7 @@ namespace Application.MainModule.Services
         public UserDto SignUp(UserDto userDto)
         {
             var currentUser = _userRepository.List(s => s.Email.Equals(userDto.Username));
-            if (currentUser.Any()) return null;
+            if (currentUser.Any()) throw new BusinessException("El usuario ingresado ya existe.");
             var modelUser = _mapper.Map<User>(userDto);
             _userRepository.Add(modelUser);
             _userRepository.Save();

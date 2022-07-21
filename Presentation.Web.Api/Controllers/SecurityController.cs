@@ -2,6 +2,7 @@
 using Application.MainModule.DTO.Request;
 using Application.MainModule.DTO.Response;
 using Application.MainModule.IServices;
+using Infrastructure.CrossCutting.Logger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Presentation.Web.Api.Util;
@@ -16,18 +17,22 @@ namespace Presentation.Web.Api.Controllers
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
         private readonly IJwtUtil _jwtUtil;
+        private readonly ILoggerManager _logger;
 
-        public SecurityController(IUserService userService, IConfiguration configuration, IJwtUtil jwtUtil)
+        public SecurityController(IUserService userService, IConfiguration configuration, IJwtUtil jwtUtil, ILoggerManager logger)
         {
             _userService = userService;
             _configuration = configuration;
             _jwtUtil = jwtUtil;
+            _logger = logger;
         }
 
         [Route("auth")]
         [HttpPost]
         public IActionResult SignIn(SignInRequestDto request)
         {
+            //throw new Exception("Error connecting database...");
+            _logger.LoggerInfo("Ingresando al metodo de autenticación.");
             if (ModelState.IsValid)
             {
                 var userDto = _userService.SignIn(request.Username, request.Password);
