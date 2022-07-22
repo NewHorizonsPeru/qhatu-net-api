@@ -48,7 +48,32 @@ namespace Presentation.Web.Api
             services.Configure<CryptoSection>(Configuration.GetSection("CryptoSection"));
             //RATE LIMIT SECTION
             services.AddMemoryCache();
-            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+            //services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+            services.Configure<IpRateLimitOptions>(opt =>
+                {
+                    opt.EnableEndpointRateLimiting = true;
+                    opt.StackBlockedRequests = true;
+                    opt.HttpStatusCode = (int)HttpStatusCode.TooManyRequests;
+                    opt.RealIpHeader = "X-Real-IP";
+                    opt.ClientIdHeader = "X-ClientId";
+                    opt.QuotaExceededResponse = new QuotaExceededResponse
+                    {
+                        Content =
+                            "{{ \"statusCode\": \"429\", \"message\": \"Whoa! Calm down, cowboy!\", \"details\": \"Quota exceeded. Maximum allowed: {0} per {1}. Please try again in {2} second(s).\" }}",
+                        ContentType = "application/json",
+                        StatusCode = 429
+                    };
+                    opt.GeneralRules = new List<RateLimitRule>
+                    {
+                        new()
+                        {
+                            Endpoint = "GET:/api/product/getAll",
+                            Period = "10s",
+                            Limit = 5
+                        }
+                    };
+                }
+            );
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
